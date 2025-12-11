@@ -35,8 +35,8 @@ public class UpdatePlayerTest {
 
     // Test-only subclass -> to change after refactoring
     private static class TestPlayer extends player {
-        TestPlayer(String avatarClass, ArrayList<String> inv) {
-            super("Florian", "Grognak le barbare", avatarClass, 200, inv);
+        TestPlayer(String avatarClass, ArrayList<String> inventory) {
+            super("Florian", "Grognak le barbare", avatarClass, 200, inventory);
         }
 
         void givenXp(int value) {
@@ -48,8 +48,8 @@ public class UpdatePlayerTest {
         return new TestPlayer(avatarClass, new ArrayList<>());
     }
 
-    private static TestPlayer testPlayer(String avatarClass, ArrayList<String> inv) {
-        return new TestPlayer(avatarClass, inv);
+    private static TestPlayer testPlayer(String avatarClass, ArrayList<String> inventory) {
+        return new TestPlayer(avatarClass, inventory);
     }
 
     private static String captureOutput(Runnable action) {
@@ -79,8 +79,8 @@ public class UpdatePlayerTest {
     @Test
     @DisplayName("addXp with DWARF level up adds item + upgrades abilities")
     void addXp_levelUp_dwarf_toLevel5() {
-        ArrayList<String> inv = new ArrayList<>();
-        TestPlayer p = testPlayer(DWARF,inv);
+        ArrayList<String> inventory = new ArrayList<>();
+        TestPlayer p = testPlayer(DWARF,inventory);
 
         p.givenXp(110);
         boolean leveled = UpdatePlayer.addXp(p, 1);
@@ -119,12 +119,12 @@ public class UpdatePlayerTest {
     })
     void majFinDeTour_underHalfHealth(String avatarClass, String item, int xp, int expectedHp) {
 
-        ArrayList<String> inv = new ArrayList<>();
+        ArrayList<String> inventory = new ArrayList<>();
         if (!"NONE".equals(item)) {
-            inv.add(item);
+            inventory.add(item);
         }
 
-        TestPlayer p = testPlayer(avatarClass, inv);
+        TestPlayer p = testPlayer(avatarClass, inventory);
 
         if (ARCHER.equals(avatarClass) && "Magic Bow".equals(item)) {
             p.healthpoints = 40;
