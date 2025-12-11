@@ -35,13 +35,21 @@ public class UpdatePlayerTest {
 
     // Test-only subclass -> to change after refactoring
     private static class TestPlayer extends player {
-        TestPlayer(String playerName, String avatarName, String avatarClass, int money, ArrayList<String> inventory) {
-            super(playerName, avatarName, avatarClass, money, inventory);
+        TestPlayer(String avatarClass, ArrayList<String> inv) {
+            super("Florian", "Grognak le barbare", avatarClass, 200, inv);
         }
 
         void givenXp(int value) {
             this.xp = value;
         }
+    }
+
+    private static TestPlayer testPlayer(String avatarClass) {
+        return new TestPlayer(avatarClass, new ArrayList<>());
+    }
+
+    private static TestPlayer testPlayer(String avatarClass, ArrayList<String> inv) {
+        return new TestPlayer(avatarClass, inv);
     }
 
     private static String captureOutput(Runnable action) {
@@ -59,7 +67,7 @@ public class UpdatePlayerTest {
     @Test
     @DisplayName("addXp without level up -> returns false for level up and adds no item")
     void addXp_noLevelUp() {
-        TestPlayer p = new TestPlayer("Florian", "Grognak le barbare", ADVENTURER, 200, new ArrayList<>());
+        TestPlayer p = testPlayer(ADVENTURER);
 
         boolean leveled = UpdatePlayer.addXp(p, 5);
 
@@ -72,7 +80,7 @@ public class UpdatePlayerTest {
     @DisplayName("addXp with DWARF level up adds item + upgrades abilities")
     void addXp_levelUp_dwarf_toLevel5() {
         ArrayList<String> inv = new ArrayList<>();
-        TestPlayer p = new TestPlayer("Florian", "Grognak le barbare", DWARF, 200, inv);
+        TestPlayer p = testPlayer(DWARF,inv);
 
         p.givenXp(110);
         boolean leveled = UpdatePlayer.addXp(p, 1);
@@ -90,7 +98,7 @@ public class UpdatePlayerTest {
     @Test
     @DisplayName("majFinDeTour when HP=0 prints KO and stops")
     void majFinDeTour_KO_prints() {
-        TestPlayer p = new TestPlayer("Florian", "Grognak le barbare", ADVENTURER, 200, new ArrayList<>());
+        TestPlayer p = testPlayer(ADVENTURER);
         p.healthpoints = 20;
         p.currenthealthpoints = 0;
 
@@ -109,16 +117,16 @@ public class UpdatePlayerTest {
             "ADVENTURER, NONE,   0, 10",
             "ADVENTURER, NONE,  30, 11"
     })
-    void majFinDeTour_underHalfHealth(String clazz, String item, int xp, int expectedHp) {
+    void majFinDeTour_underHalfHealth(String avatarClass, String item, int xp, int expectedHp) {
 
         ArrayList<String> inv = new ArrayList<>();
         if (!"NONE".equals(item)) {
             inv.add(item);
         }
 
-        TestPlayer p = new TestPlayer("Florian", "Grognak le barbare", clazz, 200, inv);
+        TestPlayer p = testPlayer(avatarClass, inv);
 
-        if (ARCHER.equals(clazz) && "Magic Bow".equals(item)) {
+        if (ARCHER.equals(avatarClass) && "Magic Bow".equals(item)) {
             p.healthpoints = 40;
             p.currenthealthpoints = 18; // <20
         } else {
@@ -140,7 +148,7 @@ public class UpdatePlayerTest {
             "20, 25, 20"
     })
     void majFinDeTour_boundaries(int hp, int current, int expected) {
-        TestPlayer p = new TestPlayer("Florian", "Grognak le barbare", ARCHER, 200, new ArrayList<>());
+        TestPlayer p = testPlayer(ARCHER);
         p.healthpoints = hp;
         p.currenthealthpoints = current;
 
