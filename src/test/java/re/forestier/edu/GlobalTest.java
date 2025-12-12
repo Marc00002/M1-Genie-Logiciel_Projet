@@ -4,7 +4,7 @@
 //import org.junit.jupiter.api.Test;
 //import re.forestier.edu.rpg.Affichage;
 //import re.forestier.edu.rpg.UpdatePlayer;
-//import re.forestier.edu.rpg.player;
+//import re.forestier.edu.rpg.Player;
 //
 //import java.util.ArrayList;
 //
@@ -17,10 +17,10 @@
 //
 //    @Test
 //    void testAffichageBase() {
-//        player player = new player("Florian", "Gnognak le Barbare", "ADVENTURER", 200, new ArrayList<>());
-//        UpdatePlayer.addXp(player, 20);
-//        player.inventory = new ArrayList<>();
+//        Player Player = new Player("Florian", "Gnognak le Barbare", "ADVENTURER", 200, new ArrayList<>());
+//        UpdatePlayer.addXp(Player, 20);
+//        Player.inventory = new ArrayList<>();
 //
-//        verify(Affichage.afficherJoueur(player));
+//        verify(Affichage.afficherJoueur(Player));
 //    }
 //}

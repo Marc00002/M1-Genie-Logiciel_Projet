@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import re.forestier.edu.rpg.player;
+import re.forestier.edu.rpg.Player;
 
 import java.util.ArrayList;
 
@@ -18,7 +18,7 @@ public class PlayerTest {
     private static final String DWARF = "DWARF";
 
     // Test-only subclass -> temporarily to change after refactoring
-    private static class TestPlayer extends player {
+    private static class TestPlayer extends Player {
         TestPlayer(String avatarClass, int money, ArrayList<String> inventory) {
             super("Florian", "Grognak le barbare", avatarClass, money, inventory);
         }
@@ -37,17 +37,17 @@ public class PlayerTest {
     }
 
     @Test
-    @DisplayName("Valid player creation initializes fields")
+    @DisplayName("Valid Player creation initializes fields")
     void validPlayerCreation() {
         ArrayList<String> inventory = new ArrayList<>();
         TestPlayer p = testPlayer(ARCHER, inventory);
 
-        assertEquals("Florian", p.playerName);
-        assertEquals("Grognak le barbare", p.Avatar_name);
+        assertEquals("Florian", p.getPlayerName());
+        assertEquals("Grognak le barbare", p.getAvatarName());
         assertEquals(ARCHER, p.getAvatarClass());
-        assertEquals(200, p.money.intValue());
-        assertSame(inventory, p.inventory);
-        assertNotNull(p.abilities);
+        assertEquals(200, p.getMoney());
+        assertSame(inventory, p.getInventory());
+        assertNotNull(p.getAbilities());
     }
 
     @Test
@@ -56,11 +56,11 @@ public class PlayerTest {
         TestPlayer p = testPlayer("INVALID",  new ArrayList<>());
 
         assertNull(p.getAvatarClass());
-        assertNull(p.playerName);
-        assertNull(p.Avatar_name);
-        assertNull(p.inventory);
-        assertNull(p.money);
-        assertNull(p.abilities);
+        assertNull(p.getPlayerName());
+        assertNull(p.getAvatarName());
+        assertNull(p.getInventory());
+        assertNull(p.getMoney());
+        assertNull(p.getAbilities());
     }
 
     @ParameterizedTest(name = "addMoney: {0} + {1} → {2}")
@@ -72,7 +72,7 @@ public class PlayerTest {
     void addMoney_characterization(int initial, int amount, int expected) {
         TestPlayer p = testPlayer(ADVENTURER, initial);
         p.addMoney(amount);
-        assertEquals(expected, p.money);
+        assertEquals(expected, p.getMoney());
     }
 
     @ParameterizedTest(name = "removeMoney: {0} - {1} → {2}")
@@ -85,7 +85,7 @@ public class PlayerTest {
     void removeMoney_validCases(int initial, int amount, int expected) {
         TestPlayer p = testPlayer(DWARF, initial);
         p.removeMoney(amount);
-        assertEquals(expected, p.money);
+        assertEquals(expected, p.getMoney());
     }
 
     @Test

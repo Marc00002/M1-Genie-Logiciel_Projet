@@ -3,74 +3,77 @@ package re.forestier.edu.rpg;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class player {
-    public String playerName;
-    public String Avatar_name;
-    private String AvatarClass;
+public class Player {
+    private String playerName;
+    private String avatarName;
+    private String avatarClass;
+    private Integer money;
 
-    public Integer money;
-    private Float __real_money__;
-
-
-    public int level;
-    public int healthpoints;
-    public int currenthealthpoints;
+    private int healthPoints;
+    private int currentHealthPoints;
     protected int xp;
 
+    private HashMap<String, Integer> abilities;
+    private ArrayList<String> inventory;
 
-    public HashMap<String, Integer> abilities;
-    public ArrayList<String> inventory;
-    public player(String playerName, String avatar_name, String avatarClass, int money, ArrayList<String> inventory) {
+    private static final HashMap<Integer,Integer> LEVEL_THRESHOLDS = new HashMap<>();
+    static {
+        LEVEL_THRESHOLDS.put(2,10);
+        LEVEL_THRESHOLDS.put(3,27);
+        LEVEL_THRESHOLDS.put(4,57);
+        LEVEL_THRESHOLDS.put(5,111);
+    }
+
+    public Player(String playerName, String avatarName, String avatarClass, int money, ArrayList<String> inventory) {
         if (!avatarClass.equals("ARCHER") && !avatarClass.equals("ADVENTURER") && !avatarClass.equals("DWARF") ) {
             return;
         }
 
         this.playerName = playerName;
-        Avatar_name = avatar_name;
-        AvatarClass = avatarClass;
-        this.money = Integer.valueOf(money);
+        this.avatarName = avatarName;
+        this.avatarClass = avatarClass;
+        this.money = money;
         this.inventory = inventory;
-        this.abilities = UpdatePlayer.abilitiesPerTypeAndLevel().get(AvatarClass).get(1);
+        this.abilities = UpdatePlayer.abilitiesPerTypeAndLevel().get(this.avatarClass).get(1);
     }
 
-    public String getAvatarClass () {
-        return AvatarClass;
-    }
+    public String getPlayerName() { return playerName; }
+    public String getAvatarName() { return avatarName; }
+    public String getAvatarClass() { return avatarClass; }
 
-    public void removeMoney(int amount) throws IllegalArgumentException {
-        if (money - amount < 0) {
+    public Integer getMoney() { return money; }
+    public HashMap<String,Integer> getAbilities() { return abilities; }
+    public ArrayList<String> getInventory() { return inventory; }
+
+    public int getHealthPoints() { return healthPoints; }
+    public int getCurrentHealthPoints() { return currentHealthPoints; }
+    public void setHealthPoints(int hp) { this.healthPoints = hp; }
+    public void setCurrentHealthPoints(int hp) { this.currentHealthPoints = hp; }
+
+    public int getXp() { return xp; }
+
+    public void removeMoney(int amount) {
+        int result = money - amount;
+        if (result < 0) {
             throw new IllegalArgumentException("Player can't have a negative money!");
         }
-
-        money = Integer.parseInt(money.toString()) - amount;
+        money = result;
     }
     public void addMoney(int amount) {
-        var value = Integer.valueOf(amount);
-        money = money + (value != null ? value : 0);
+        money += amount; // negative values still allowed, as in your tests
     }
+
     public int retrieveLevel() {
-        // (lvl-1) * 10 + round((lvl * xplvl-1)/4)
-        HashMap<Integer, Integer> levels = new HashMap<>();
-        levels.put(2,10); // 1*10 + ((2*0)/4)
-        levels.put(3,27); // 2*10 + ((3*10)/4)
-        levels.put(4,57); // 3*10 + ((4*27)/4)
-        levels.put(5,111); // 4*10 + ((5*57)/4)
-        //TODO : ajouter les prochains niveaux
-
-        if (xp < levels.get(2)) {
+        if (xp < LEVEL_THRESHOLDS.get(2)) {
             return 1;
-        }
-        else if (xp < levels.get(3)) {return 2;
-        }
-        if (xp < levels.get(4)) {
+        } else if (xp < LEVEL_THRESHOLDS.get(3)) {
+            return 2;
+        } else if (xp < LEVEL_THRESHOLDS.get(4)) {
             return 3;
+        } else if (xp < LEVEL_THRESHOLDS.get(5)) {
+            return 4;
         }
-        if (xp < levels.get(5)) return 4;
         return 5;
-    }
-
-    public int getXp() {
-        return this.xp;
     }
 
     /*

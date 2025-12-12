@@ -3,10 +3,9 @@ package re.forestier.edu;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import re.forestier.edu.rpg.Affichage;
-import re.forestier.edu.rpg.player;
+import re.forestier.edu.rpg.Player;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -14,12 +13,12 @@ public class AffichageTest {
 
     @Test
     @DisplayName("afficherJoueur formats header, level, abilities and inventory")
-    void afficherJoueur_formatsPlayerInfo() {        player p = new player("Florian", "Grognak le barbare", "ARCHER", 200, new ArrayList<>());
+    void afficherJoueur_formatsPlayerInfo() {        Player p = new Player("Florian", "Grognak le barbare", "ARCHER", 200, new ArrayList<>());
 
-        p.abilities = new HashMap<>();
-        p.abilities.put("ATK", 3);
+        p.getAbilities().clear();
+        p.getAbilities().put("ATK", 3);
 
-        p.inventory.add("Magic Bow");
+        p.getInventory().add("Magic Bow");
 
         String s = Affichage.afficherJoueur(p);
 

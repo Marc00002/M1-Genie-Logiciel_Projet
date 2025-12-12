@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import re.forestier.edu.rpg.player;
+import re.forestier.edu.rpg.Player;
 import re.forestier.edu.rpg.UpdatePlayer;
 
 import java.io.ByteArrayOutputStream;
@@ -34,7 +34,7 @@ public class UpdatePlayerTest {
     ));
 
     // Test-only subclass -> to change after refactoring
-    private static class TestPlayer extends player {
+    private static class TestPlayer extends Player {
         TestPlayer(String avatarClass, ArrayList<String> inventory) {
             super("Florian", "Grognak le barbare", avatarClass, 200, inventory);
         }
@@ -73,7 +73,7 @@ public class UpdatePlayerTest {
 
         assertFalse(leveled);
         assertEquals(5, p.getXp());
-        assertTrue(p.inventory.isEmpty());
+        assertTrue(p.getInventory().isEmpty());
     }
 
     @Test
@@ -89,22 +89,22 @@ public class UpdatePlayerTest {
         assertEquals(111, p.getXp());
         assertEquals(5, p.retrieveLevel());
 
-        assertThat(p.inventory, hasSize(1));
-        assertThat(EXPECTED_ITEMS, hasItem(p.inventory.get(0)));
+        assertThat(p.getInventory(), hasSize(1));
+        assertThat(EXPECTED_ITEMS, hasItem(p.getInventory().get(0)));
 
-        assertEquals(1, p.abilities.get("CHA"));
+        assertEquals(1, p.getAbilities().get("CHA"));
     }
 
     @Test
     @DisplayName("majFinDeTour when HP=0 prints KO and stops")
     void majFinDeTour_KO_prints() {
         TestPlayer p = testPlayer(ADVENTURER);
-        p.healthpoints = 20;
-        p.currenthealthpoints = 0;
+        p.setHealthPoints(20);
+        p.setCurrentHealthPoints(0);
 
         String output = captureOutput(() -> UpdatePlayer.majFinDeTour(p));
 
-        assertEquals(0, p.currenthealthpoints);
+        assertEquals(0, p.getCurrentHealthPoints());
         assertTrue(output.contains("Le joueur est KO !"));
     }
 
@@ -127,18 +127,18 @@ public class UpdatePlayerTest {
         TestPlayer p = testPlayer(avatarClass, inventory);
 
         if (ARCHER.equals(avatarClass) && "Magic Bow".equals(item)) {
-            p.healthpoints = 40;
-            p.currenthealthpoints = 18; // <20
+            p.setHealthPoints(40);
+            p.setCurrentHealthPoints(18);
         } else {
-            p.healthpoints = 20;
-            p.currenthealthpoints = 9;  // <10
+            p.setHealthPoints(20);
+            p.setCurrentHealthPoints(9);
         }
 
         p.givenXp(xp);
 
         UpdatePlayer.majFinDeTour(p);
 
-        assertEquals(expectedHp, p.currenthealthpoints);
+        assertEquals(expectedHp, p.getCurrentHealthPoints());
     }
 
     @ParameterizedTest(name = "majFinDeTour HP boundaries: hp={0}, current={1} → {2}")
@@ -149,12 +149,12 @@ public class UpdatePlayerTest {
     })
     void majFinDeTour_boundaries(int hp, int current, int expected) {
         TestPlayer p = testPlayer(ARCHER);
-        p.healthpoints = hp;
-        p.currenthealthpoints = current;
+        p.setHealthPoints(hp);
+        p.setCurrentHealthPoints(current);
 
         UpdatePlayer.majFinDeTour(p);
 
-        assertEquals(expected, p.currenthealthpoints);
+        assertEquals(expected, p.getCurrentHealthPoints());
     }
 
     //adventurer bug test (doesn't pass), should pass after fixing the bug
@@ -163,8 +163,8 @@ public class UpdatePlayerTest {
     void adventurer_levelUp_updatesAbilities() {
         TestPlayer p = testPlayer(ADVENTURER);
 
-        assertEquals(1, p.abilities.get("INT"));
-        assertEquals(2, p.abilities.get("CHA"));
+        assertEquals(1, p.getAbilities().get("INT"));
+        assertEquals(2, p.getAbilities().get("CHA"));
 
         p.givenXp(9);
         boolean leveled = UpdatePlayer.addXp(p, 1);
@@ -172,8 +172,8 @@ public class UpdatePlayerTest {
         assertTrue(leveled);
         assertEquals(2, p.retrieveLevel());
 
-        assertEquals(2, p.abilities.get("INT"));
-        assertEquals(3, p.abilities.get("CHA"));
+        assertEquals(2, p.getAbilities().get("INT"));
+        assertEquals(3, p.getAbilities().get("CHA"));
     }
 
 

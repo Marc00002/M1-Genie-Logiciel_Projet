@@ -98,7 +98,7 @@ public class UpdatePlayer {
         return abilitiesPerTypeAndLevel;
     }
 
-    public static boolean addXp(player player, int xp) {
+    public static boolean addXp(Player player, int xp) {
         int currentLevel = player.retrieveLevel();
         player.xp += xp;
         int newLevel = player.retrieveLevel();
@@ -111,38 +111,38 @@ public class UpdatePlayer {
         return false;
     }
 
-    private static void giveRandomItem(player player) {
+    private static void giveRandomItem(Player player) {
         Random random = new Random();
         int index = random.nextInt(objectList.length);
-        player.inventory.add(objectList[index]);
+        player.getInventory().add(objectList[index]);
     }
 
-    private static void applyLevelAbilities(player player, int newLevel) {
+    private static void applyLevelAbilities(Player player, int newLevel) {
         HashMap<String, Integer> abilitiesForLevel =
                 abilitiesPerTypeAndLevel()
                         .get(player.getAvatarClass())
                         .get(newLevel);
 
         abilitiesForLevel.forEach((ability, level) -> {
-            player.abilities.put(ability, level);
+            player.getAbilities().put(ability, level);
         });
     }
 
-    public static void majFinDeTour(player player) {
-        if (player.currenthealthpoints <= 0) {
+    public static void majFinDeTour(Player player) {
+        if (player.getCurrentHealthPoints() <= 0) {
             System.out.println("Le joueur est KO !");
             return;
         }
 
-        if (player.currenthealthpoints < player.healthpoints / 2) {
+        if (player.getCurrentHealthPoints() < player.getHealthPoints() / 2) {
             healBelowHalf(player);
         }
-        if (player.currenthealthpoints >= player.healthpoints) {
-            player.currenthealthpoints = player.healthpoints;
+        if (player.getCurrentHealthPoints() >= player.getHealthPoints()) {
+            player.setCurrentHealthPoints(player.getHealthPoints());
         }
     }
 
-    private static void healBelowHalf(player player) {
+    private static void healBelowHalf(Player player) {
         String avatarClass = player.getAvatarClass();
 
         if ("DWARF".equals(avatarClass)) {
@@ -154,24 +154,31 @@ public class UpdatePlayer {
         }
     }
 
-    private static void healDwarfBelowHalf(player player) {
-        if (player.inventory.contains("Holy Elixir")) {
-            player.currenthealthpoints += 1;
+    private static void healDwarfBelowHalf(Player player) {
+        int hp = player.getCurrentHealthPoints();
+        if (player.getInventory().contains("Holy Elixir")) {
+            hp += 1;
         }
-        player.currenthealthpoints += 1;
+        hp += 1;
+        player.setCurrentHealthPoints(hp);
     }
 
-    private static void healArcherBelowHalf(player player) {
-        player.currenthealthpoints += 1;
-        if (player.inventory.contains("Magic Bow")) {
-            player.currenthealthpoints += player.currenthealthpoints / 8 - 1;
+
+    private static void healArcherBelowHalf(Player player) {
+        int hp = player.getCurrentHealthPoints();
+        hp += 1;
+        if (player.getInventory().contains("Magic Bow")) {
+            hp += hp / 8 - 1;
         }
+        player.setCurrentHealthPoints(hp);
     }
 
-    private static void healAdventurerBelowHalf(player player) {
-        player.currenthealthpoints += 2;
+    private static void healAdventurerBelowHalf(Player player) {
+        int hp = player.getCurrentHealthPoints();
+        hp += 2;
         if (player.retrieveLevel() < 3) {
-            player.currenthealthpoints -= 1;
+            hp -= 1;
         }
+        player.setCurrentHealthPoints(hp);
     }
 }
