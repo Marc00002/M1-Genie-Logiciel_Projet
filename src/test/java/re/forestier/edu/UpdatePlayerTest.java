@@ -157,4 +157,24 @@ public class UpdatePlayerTest {
         assertEquals(expected, p.currenthealthpoints);
     }
 
+    //adventurer bug test (doesn't pass), should pass after fixing the bug
+    @Test
+    @DisplayName("Adventurer level 1 and level 2 abilities are correct")
+    void adventurer_levelUp_updatesAbilities() {
+        TestPlayer p = testPlayer(ADVENTURER);
+
+        assertEquals(1, p.abilities.get("INT"));
+        assertEquals(2, p.abilities.get("CHA"));
+
+        p.givenXp(9);
+        boolean leveled = UpdatePlayer.addXp(p, 1);
+
+        assertTrue(leveled);
+        assertEquals(2, p.retrieveLevel());
+
+        assertEquals(2, p.abilities.get("INT"));
+        assertEquals(3, p.abilities.get("CHA"));
+    }
+
+
 }
