@@ -128,47 +128,50 @@ public class UpdatePlayer {
         });
     }
 
-    // majFinDeTour met à jour les points de vie
     public static void majFinDeTour(player player) {
-        if(player.currenthealthpoints == 0) {
+        if (player.currenthealthpoints <= 0) {
             System.out.println("Le joueur est KO !");
             return;
         }
 
-        if(player.currenthealthpoints < player.healthpoints/2) {
-            if(!player.getAvatarClass().equals("ADVENTURER")) {
-                if(player.getAvatarClass().equals("DWARF")) {
-                    if(player.inventory.contains("Holy Elixir")) {
-                        player.currenthealthpoints+=1;
-                    }
-                    player.currenthealthpoints+=1;
-                } else if(player.getAvatarClass().equals("ADVENTURER")) {
-                    player.currenthealthpoints+=2;
-                }
-
-
-                if(player.getAvatarClass().equals("ARCHER")) {
-                    player.currenthealthpoints+=1;
-                    if(player.inventory.contains("Magic Bow")) {
-                        player.currenthealthpoints+=player.currenthealthpoints/8-1;
-                    }
-                }
-            } else {
-                player.currenthealthpoints+=2;
-                if(player.retrieveLevel() < 3) {
-                    player.currenthealthpoints-=1;
-                }
-            }
-        } else if(player.currenthealthpoints >= player.healthpoints/2){
-            if(player.currenthealthpoints >= player.healthpoints) {
-                player.currenthealthpoints = player.healthpoints;
-                return;
-            }
+        if (player.currenthealthpoints < player.healthpoints / 2) {
+            healBelowHalf(player);
         }
-
-
-        if(player.currenthealthpoints >= player.healthpoints) {
+        if (player.currenthealthpoints >= player.healthpoints) {
             player.currenthealthpoints = player.healthpoints;
+        }
+    }
+
+    private static void healBelowHalf(player player) {
+        String avatarClass = player.getAvatarClass();
+
+        if ("DWARF".equals(avatarClass)) {
+            healDwarfBelowHalf(player);
+        } else if ("ADVENTURER".equals(avatarClass)) {
+            healAdventurerBelowHalf(player);
+        } else if ("ARCHER".equals(avatarClass)) {
+            healArcherBelowHalf(player);
+        }
+    }
+
+    private static void healDwarfBelowHalf(player player) {
+        if (player.inventory.contains("Holy Elixir")) {
+            player.currenthealthpoints += 1;
+        }
+        player.currenthealthpoints += 1;
+    }
+
+    private static void healArcherBelowHalf(player player) {
+        player.currenthealthpoints += 1;
+        if (player.inventory.contains("Magic Bow")) {
+            player.currenthealthpoints += player.currenthealthpoints / 8 - 1;
+        }
+    }
+
+    private static void healAdventurerBelowHalf(player player) {
+        player.currenthealthpoints += 2;
+        if (player.retrieveLevel() < 3) {
+            player.currenthealthpoints -= 1;
         }
     }
 }
