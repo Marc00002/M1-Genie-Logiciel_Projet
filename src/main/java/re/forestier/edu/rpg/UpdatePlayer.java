@@ -20,8 +20,8 @@ public class UpdatePlayer {
         adventurerMap.put(1, adventurerLevel1);
 
         HashMap<String, Integer> adventurerLevel2 = new HashMap<>();
-        adventurerLevel1.put("INT", 2);
-        adventurerLevel1.put("CHA", 3);
+        adventurerLevel2.put("INT", 2);
+        adventurerLevel2.put("CHA", 3);
         adventurerMap.put(2, adventurerLevel2);
 
         HashMap<String, Integer> adventurerLevel3 = new HashMap<>();
@@ -104,20 +104,28 @@ public class UpdatePlayer {
         int newLevel = player.retrieveLevel();
 
         if (newLevel != currentLevel) {
-            // Player leveled-up!
-            // Give a random object
-            ;
-            Random random = new Random();
-            player.inventory.add(objectList[random.nextInt(objectList.length - 0) + 0]);
-
-            // Add/upgrade abilities to player
-            HashMap<String, Integer> abilities = abilitiesPerTypeAndLevel().get(player.getAvatarClass()).get(newLevel);
-            abilities.forEach((ability, level) -> {
-                player.abilities.put(ability, abilities.get(ability));
-            });
+            giveRandomItem(player);
+            applyLevelAbilities(player, newLevel);
             return true;
         }
         return false;
+    }
+
+    private static void giveRandomItem(player player) {
+        Random random = new Random();
+        int index = random.nextInt(objectList.length);
+        player.inventory.add(objectList[index]);
+    }
+
+    private static void applyLevelAbilities(player player, int newLevel) {
+        HashMap<String, Integer> abilitiesForLevel =
+                abilitiesPerTypeAndLevel()
+                        .get(player.getAvatarClass())
+                        .get(newLevel);
+
+        abilitiesForLevel.forEach((ability, level) -> {
+            player.abilities.put(ability, level);
+        });
     }
 
     // majFinDeTour met à jour les points de vie
