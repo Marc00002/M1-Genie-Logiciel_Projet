@@ -7,6 +7,10 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import re.forestier.edu.rpg.Player;
 import re.forestier.edu.rpg.UpdatePlayer;
+import re.forestier.edu.rpg.classes.Adventurer;
+import re.forestier.edu.rpg.classes.Archer;
+import re.forestier.edu.rpg.classes.AvatarClass;
+import re.forestier.edu.rpg.classes.Dwarf;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -35,7 +39,7 @@ public class UpdatePlayerTest {
 
     // Test-only subclass -> to change after refactoring
     private static class TestPlayer extends Player {
-        TestPlayer(String avatarClass, ArrayList<String> inventory) {
+        TestPlayer(AvatarClass avatarClass, ArrayList<String> inventory) {
             super("Florian", "Grognak le barbare", avatarClass, 200, inventory);
         }
 
@@ -44,13 +48,27 @@ public class UpdatePlayerTest {
         }
     }
 
-    private static TestPlayer testPlayer(String avatarClass) {
+    private static TestPlayer testPlayer(AvatarClass avatarClass) {
         return new TestPlayer(avatarClass, new ArrayList<>());
     }
 
-    private static TestPlayer testPlayer(String avatarClass, ArrayList<String> inventory) {
+    private static TestPlayer testPlayer(AvatarClass avatarClass, ArrayList<String> inventory) {
         return new TestPlayer(avatarClass, inventory);
     }
+
+    private static AvatarClass toAvatarClass(String name) {
+        switch (name) {
+            case DWARF:
+                return new Dwarf();
+            case ARCHER:
+                return new Archer();
+            case ADVENTURER:
+                return new Adventurer();
+            default:
+                return null;
+        }
+    }
+
 
     private static String captureOutput(Runnable action) {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -67,7 +85,7 @@ public class UpdatePlayerTest {
     @Test
     @DisplayName("addXp without level up -> returns false for level up and adds no item")
     void addXp_noLevelUp() {
-        TestPlayer p = testPlayer(ADVENTURER);
+        TestPlayer p = testPlayer(new Adventurer());
 
         boolean leveled = UpdatePlayer.addXp(p, 5);
 
@@ -80,7 +98,7 @@ public class UpdatePlayerTest {
     @DisplayName("addXp with DWARF level up adds item + upgrades abilities")
     void addXp_levelUp_dwarf_toLevel5() {
         ArrayList<String> inventory = new ArrayList<>();
-        TestPlayer p = testPlayer(DWARF,inventory);
+        TestPlayer p = testPlayer(new Dwarf(),inventory);
 
         p.givenXp(110);
         boolean leveled = UpdatePlayer.addXp(p, 1);
@@ -98,7 +116,7 @@ public class UpdatePlayerTest {
     @Test
     @DisplayName("majFinDeTour when HP=0 prints KO and stops")
     void majFinDeTour_KO_prints() {
-        TestPlayer p = testPlayer(ADVENTURER);
+        TestPlayer p = testPlayer(new Adventurer());
         p.setHealthPoints(20);
         p.setCurrentHealthPoints(0);
 
@@ -124,7 +142,7 @@ public class UpdatePlayerTest {
             inventory.add(item);
         }
 
-        TestPlayer p = testPlayer(avatarClass, inventory);
+        TestPlayer p = testPlayer(toAvatarClass(avatarClass), inventory);
 
         if (ARCHER.equals(avatarClass) && "Magic Bow".equals(item)) {
             p.setHealthPoints(40);
@@ -148,7 +166,7 @@ public class UpdatePlayerTest {
             "20, 25, 20"
     })
     void majFinDeTour_boundaries(int hp, int current, int expected) {
-        TestPlayer p = testPlayer(ARCHER);
+        TestPlayer p = testPlayer(new Archer());
         p.setHealthPoints(hp);
         p.setCurrentHealthPoints(current);
 
@@ -161,7 +179,7 @@ public class UpdatePlayerTest {
     @Test
     @DisplayName("Adventurer level 1 and level 2 abilities are correct")
     void adventurer_levelUp_updatesAbilities() {
-        TestPlayer p = testPlayer(ADVENTURER);
+        TestPlayer p = testPlayer(new Adventurer());
 
         assertEquals(1, p.getAbilities().get("INT"));
         assertEquals(2, p.getAbilities().get("CHA"));

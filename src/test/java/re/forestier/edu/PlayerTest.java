@@ -6,6 +6,10 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 import re.forestier.edu.rpg.Player;
+import re.forestier.edu.rpg.classes.Adventurer;
+import re.forestier.edu.rpg.classes.Archer;
+import re.forestier.edu.rpg.classes.AvatarClass;
+import re.forestier.edu.rpg.classes.Dwarf;
 
 import java.util.ArrayList;
 
@@ -13,13 +17,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class PlayerTest {
 
-    private static final String ADVENTURER = "ADVENTURER";
-    private static final String ARCHER = "ARCHER";
-    private static final String DWARF = "DWARF";
-
     // Test-only subclass -> temporarily to change after refactoring
     private static class TestPlayer extends Player {
-        TestPlayer(String avatarClass, int money, ArrayList<String> inventory) {
+        TestPlayer(AvatarClass avatarClass, int money, ArrayList<String> inventory) {
             super("Florian", "Grognak le barbare", avatarClass, money, inventory);
         }
 
@@ -28,11 +28,11 @@ public class PlayerTest {
         }
     }
 
-    private static TestPlayer testPlayer(String avatarClass, int money) {
+    private static TestPlayer testPlayer(AvatarClass avatarClass, int money) {
         return new TestPlayer(avatarClass, money, new ArrayList<>());
     }
 
-    private static TestPlayer testPlayer(String avatarClass, ArrayList<String> inventory) {
+    private static TestPlayer testPlayer(AvatarClass avatarClass, ArrayList<String> inventory) {
         return new TestPlayer(avatarClass, 200, inventory);
     }
 
@@ -40,28 +40,29 @@ public class PlayerTest {
     @DisplayName("Valid Player creation initializes fields")
     void validPlayerCreation() {
         ArrayList<String> inventory = new ArrayList<>();
-        TestPlayer p = testPlayer(ARCHER, inventory);
+        TestPlayer p = testPlayer(new Archer(), inventory);
 
         assertEquals("Florian", p.getPlayerName());
         assertEquals("Grognak le barbare", p.getAvatarName());
-        assertEquals(ARCHER, p.getAvatarClass());
+        assertTrue(p.getAvatarClass() instanceof Archer);
         assertEquals(200, p.getMoney());
         assertSame(inventory, p.getInventory());
         assertNotNull(p.getAbilities());
     }
 
-    @Test
-    @DisplayName("Invalid class returns early and leaves fields null")
-    void invalidClassLeavesDefaults() {
-        TestPlayer p = testPlayer("INVALID",  new ArrayList<>());
-
-        assertNull(p.getAvatarClass());
-        assertNull(p.getPlayerName());
-        assertNull(p.getAvatarName());
-        assertNull(p.getInventory());
-        assertNull(p.getMoney());
-        assertNull(p.getAbilities());
-    }
+    // this test will never pass as we started using classes for the avatar class instead of strings so now anything other than than these classes will not work which is a good as this test shows a bad behavior
+//    @Test
+//    @DisplayName("Invalid class returns early and leaves fields null")
+//    void invalidClassLeavesDefaults() {
+//        TestPlayer p = testPlayer("INVALID",  new ArrayList<>());
+//
+//        assertNull(p.getAvatarClass());
+//        assertNull(p.getPlayerName());
+//        assertNull(p.getAvatarName());
+//        assertNull(p.getInventory());
+//        assertNull(p.getMoney());
+//        assertNull(p.getAbilities());
+//    }
 
     @ParameterizedTest(name = "addMoney: {0} + {1} → {2}")
     @CsvSource({
@@ -70,7 +71,7 @@ public class PlayerTest {
             "100, -30, 70"
     })
     void addMoney_characterization(int initial, int amount, int expected) {
-        TestPlayer p = testPlayer(ADVENTURER, initial);
+        TestPlayer p = testPlayer(new Adventurer(), initial);
         p.addMoney(amount);
         assertEquals(expected, p.getMoney());
     }
@@ -83,7 +84,7 @@ public class PlayerTest {
             "200, 200, 0"
     })
     void removeMoney_validCases(int initial, int amount, int expected) {
-        TestPlayer p = testPlayer(DWARF, initial);
+        TestPlayer p = testPlayer(new Dwarf(), initial);
         p.removeMoney(amount);
         assertEquals(expected, p.getMoney());
     }
@@ -91,13 +92,13 @@ public class PlayerTest {
     @Test
     @DisplayName("removeMoney throws if result would be negative")
     void removeMoneyTooMuchThrows() {
-        TestPlayer p = testPlayer(ADVENTURER, 50);
+        TestPlayer p = testPlayer(new Adventurer(), 50);
         assertThrows(IllegalArgumentException.class, () -> p.removeMoney(100));
     }
 
     @Test
     void defaultXpIsZero() {
-        assertEquals(0, testPlayer(ADVENTURER, 100).getXp());
+        assertEquals(0, testPlayer(new Adventurer(), 100).getXp());
     }
 
     @ParameterizedTest (name = "XP = {0} → retrieveLevel() = {1}")
@@ -114,7 +115,7 @@ public class PlayerTest {
             "200, 5"
     })
     void retrieveLevel_boundaries(int xp, int expected) {
-        TestPlayer p = testPlayer(ADVENTURER, 100);
+        TestPlayer p = testPlayer(new Adventurer(), 100);
         p.givenXp(xp);
 
         assertEquals(expected, p.retrieveLevel());

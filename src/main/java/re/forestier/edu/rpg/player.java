@@ -1,12 +1,17 @@
 package re.forestier.edu.rpg;
 
+import re.forestier.edu.rpg.classes.Adventurer;
+import re.forestier.edu.rpg.classes.Archer;
+import re.forestier.edu.rpg.classes.AvatarClass;
+import re.forestier.edu.rpg.classes.Dwarf;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Player {
     private String playerName;
     private String avatarName;
-    private String avatarClass;
+    private AvatarClass avatarClass;
     private Integer money;
 
     private int healthPoints;
@@ -24,22 +29,18 @@ public class Player {
         LEVEL_THRESHOLDS.put(5,111);
     }
 
-    public Player(String playerName, String avatarName, String avatarClass, int money, ArrayList<String> inventory) {
-        if (!avatarClass.equals("ARCHER") && !avatarClass.equals("ADVENTURER") && !avatarClass.equals("DWARF") ) {
-            return;
-        }
-
+    public Player(String playerName, String avatarName, AvatarClass avatarClass, int money, ArrayList<String> inventory) {
         this.playerName = playerName;
         this.avatarName = avatarName;
         this.avatarClass = avatarClass;
         this.money = money;
         this.inventory = inventory;
-        this.abilities = UpdatePlayer.abilitiesPerTypeAndLevel().get(this.avatarClass).get(1);
+        this.abilities = new HashMap<>(avatarClass.getAbilitiesForLevel(1));
     }
 
     public String getPlayerName() { return playerName; }
     public String getAvatarName() { return avatarName; }
-    public String getAvatarClass() { return avatarClass; }
+    public AvatarClass getAvatarClass() { return avatarClass; }
 
     public Integer getMoney() { return money; }
     public HashMap<String,Integer> getAbilities() { return abilities; }
@@ -60,7 +61,7 @@ public class Player {
         money = result;
     }
     public void addMoney(int amount) {
-        money += amount; // negative values still allowed, as in your tests
+        money += amount;
     }
 
     public int retrieveLevel() {
