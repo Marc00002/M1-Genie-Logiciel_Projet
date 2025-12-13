@@ -21,14 +21,6 @@ public class Player {
     private HashMap<String, Integer> abilities;
     private ArrayList<String> inventory;
 
-    private static final HashMap<Integer,Integer> LEVEL_THRESHOLDS = new HashMap<>();
-    static {
-        LEVEL_THRESHOLDS.put(2,10);
-        LEVEL_THRESHOLDS.put(3,27);
-        LEVEL_THRESHOLDS.put(4,57);
-        LEVEL_THRESHOLDS.put(5,111);
-    }
-
     public Player(String playerName, String avatarName, AvatarClass avatarClass, int money, ArrayList<String> inventory) {
         this.playerName = playerName;
         this.avatarName = avatarName;
@@ -65,16 +57,7 @@ public class Player {
     }
 
     public int retrieveLevel() {
-        if (xp < LEVEL_THRESHOLDS.get(2)) {
-            return 1;
-        } else if (xp < LEVEL_THRESHOLDS.get(3)) {
-            return 2;
-        } else if (xp < LEVEL_THRESHOLDS.get(4)) {
-            return 3;
-        } else if (xp < LEVEL_THRESHOLDS.get(5)) {
-            return 4;
-        }
-        return 5;
+        return LevelSystem.getLevel(xp);
     }
 
     /*
