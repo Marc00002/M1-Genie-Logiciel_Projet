@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import re.forestier.edu.rpg.Ability;
 import re.forestier.edu.rpg.Player;
 import re.forestier.edu.rpg.UpdatePlayer;
 import re.forestier.edu.rpg.classes.Adventurer;
@@ -110,7 +111,7 @@ public class UpdatePlayerTest {
         assertThat(p.getInventory(), hasSize(1));
         assertThat(EXPECTED_ITEMS, hasItem(p.getInventory().get(0)));
 
-        assertEquals(1, p.getAbilities().get("CHA"));
+        assertEquals(1, p.getAbilityValue(Ability.AbilityType.CHA));
     }
 
     @Test
@@ -181,8 +182,8 @@ public class UpdatePlayerTest {
     void adventurer_levelUp_updatesAbilities() {
         TestPlayer p = testPlayer(new Adventurer());
 
-        assertEquals(1, p.getAbilities().get("INT"));
-        assertEquals(2, p.getAbilities().get("CHA"));
+        assertEquals(1, p.getAbilityValue(Ability.AbilityType.INT));
+        assertEquals(2, p.getAbilityValue(Ability.AbilityType.CHA));
 
         p.givenXp(9);
         boolean leveled = UpdatePlayer.addXp(p, 1);
@@ -190,8 +191,8 @@ public class UpdatePlayerTest {
         assertTrue(leveled);
         assertEquals(2, p.retrieveLevel());
 
-        assertEquals(2, p.getAbilities().get("INT"));
-        assertEquals(3, p.getAbilities().get("CHA"));
+        assertEquals(2, p.getAbilityValue(Ability.AbilityType.INT));
+        assertEquals(3, p.getAbilityValue(Ability.AbilityType.CHA));
     }
 
 

@@ -2,7 +2,6 @@ package re.forestier.edu.rpg;
 
 import re.forestier.edu.rpg.classes.AvatarClass;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
@@ -16,27 +15,22 @@ public class UpdatePlayer {
         player.xp += xp;
         int newLevel = player.retrieveLevel();
 
-        if (newLevel != currentLevel) {
-            giveRandomItem(player);
-            applyLevelAbilities(player, newLevel);
-            return true;
+        if (newLevel == currentLevel) {
+            return false;
         }
-        return false;
+        giveRandomItem(player);
+        AvatarClass avatarClass = player.getAvatarClass();
+        for (int lvl = currentLevel + 1; lvl <= newLevel; lvl++) {
+            player.applyAbilities(avatarClass.getAbilitiesForLevel(lvl));
+        }
+
+        return true;
     }
 
     private static void giveRandomItem(Player player) {
         Random random = new Random();
         int index = random.nextInt(objectList.length);
         player.getInventory().add(objectList[index]);
-    }
-
-    private static void applyLevelAbilities(Player player, int newLevel) {
-        AvatarClass avatarClass = player.getAvatarClass();
-        Map<String, Integer> abilitiesForLevel = avatarClass.getAbilitiesForLevel(newLevel);
-
-        abilitiesForLevel.forEach((ability, level) -> {
-            player.getAbilities().put(ability, level);
-        });
     }
 
     public static void majFinDeTour(Player player) {

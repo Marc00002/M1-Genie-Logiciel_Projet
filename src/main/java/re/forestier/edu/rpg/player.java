@@ -1,12 +1,9 @@
 package re.forestier.edu.rpg;
 
-import re.forestier.edu.rpg.classes.Adventurer;
-import re.forestier.edu.rpg.classes.Archer;
 import re.forestier.edu.rpg.classes.AvatarClass;
-import re.forestier.edu.rpg.classes.Dwarf;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
 
 public class Player {
     private String playerName;
@@ -18,7 +15,7 @@ public class Player {
     private int currentHealthPoints;
     protected int xp;
 
-    private HashMap<String, Integer> abilities;
+    private ArrayList<Ability> abilities;
     private ArrayList<String> inventory;
 
     public Player(String playerName, String avatarName, AvatarClass avatarClass, int money, ArrayList<String> inventory) {
@@ -27,7 +24,8 @@ public class Player {
         this.avatarClass = avatarClass;
         this.money = money;
         this.inventory = inventory;
-        this.abilities = new HashMap<>(avatarClass.getAbilitiesForLevel(1));
+        this.abilities = new ArrayList<>();
+        applyAbilities(avatarClass.getAbilitiesForLevel(1));
     }
 
     public String getPlayerName() { return playerName; }
@@ -35,7 +33,9 @@ public class Player {
     public AvatarClass getAvatarClass() { return avatarClass; }
 
     public Integer getMoney() { return money; }
-    public HashMap<String,Integer> getAbilities() { return abilities; }
+    public List<Ability> getAbilities() {
+        return abilities;
+    }
     public ArrayList<String> getInventory() { return inventory; }
 
     public int getHealthPoints() { return healthPoints; }
@@ -58,6 +58,47 @@ public class Player {
 
     public int retrieveLevel() {
         return LevelSystem.getLevel(xp);
+    }
+
+    public void applyAbilities(List<Ability> deltas) {
+        for (Ability delta : deltas) {
+            applyAbilityDelta(delta);
+        }
+    }
+
+    private void applyAbilityDelta(Ability delta) {
+        Ability.AbilityType type = delta.getType();
+        int valueToAdd = delta.getValue();
+
+        Ability existing = findAbility(type);
+
+        if (existing == null) {
+            abilities.add(new Ability(type, valueToAdd));
+        } else {
+            existing.update(valueToAdd);
+        }
+    }
+
+
+    private Ability findAbility(Ability.AbilityType type) {
+        for (Ability a : abilities) {
+            if (a.getType() == type) {
+                return a;
+            }
+        }
+        return null;
+    }
+
+
+
+    public int getAbilityValue(Ability.AbilityType type) {
+        int total = 0;
+        for (Ability a : abilities) {
+            if (a.getType() == type) {
+                total += a.getValue();
+            }
+        }
+        return total;
     }
 
     /*

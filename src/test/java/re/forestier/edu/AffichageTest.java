@@ -2,6 +2,7 @@ package re.forestier.edu;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import re.forestier.edu.rpg.Ability;
 import re.forestier.edu.rpg.Affichage;
 import re.forestier.edu.rpg.Player;
 import re.forestier.edu.rpg.classes.Archer;
@@ -18,7 +19,7 @@ public class AffichageTest {
         Player p = new Player("Florian", "Grognak le barbare", new Archer(), 200, new ArrayList<>());
 
         p.getAbilities().clear();
-        p.getAbilities().put("ATK", 3);
+        p.getAbilities().add(new Ability(Ability.AbilityType.ATK, 3));
 
         p.getInventory().add("Magic Bow");
 

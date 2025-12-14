@@ -1,36 +1,41 @@
 package re.forestier.edu.rpg.classes;
 
+import re.forestier.edu.rpg.Ability;
 import re.forestier.edu.rpg.Player;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-public class Archer extends AvatarClass{
-    private static final Map<Integer, Map<String,Integer>> ABILITIES = new HashMap<>();
+public class Archer extends AvatarClass {
+
+    private static final Map<Integer, List<Ability>> ABILITIES = new HashMap<>();
+
     static {
-        Map<String,Integer> lvl1 = new HashMap<>();
-        lvl1.put("INT", 1);
-        lvl1.put("ATK", 3);
-        lvl1.put("CHA", 1);
-        lvl1.put("VIS", 3);
-        ABILITIES.put(1, lvl1);
+        ABILITIES.put(1, Arrays.asList(
+                new Ability(Ability.AbilityType.INT, 1),
+                new Ability(Ability.AbilityType.ATK, 3),
+                new Ability(Ability.AbilityType.CHA, 1),
+                new Ability(Ability.AbilityType.VIS, 3)
+        ));
 
-        Map<String,Integer> lvl2 = new HashMap<>();
-        lvl2.put("DEF", 1);
-        lvl2.put("CHA", 2);
-        ABILITIES.put(2, lvl2);
+        ABILITIES.put(2, Arrays.asList(
+                new Ability(Ability.AbilityType.DEF, 1),
+                new Ability(Ability.AbilityType.CHA, 1)
+        ));
 
-        Map<String,Integer> lvl3 = new HashMap<>();
-        lvl3.put("ATK", 3);
-        ABILITIES.put(3, lvl3);
+        ABILITIES.put(4, Arrays.asList(
+                new Ability(Ability.AbilityType.DEF, 1)
+        ));
 
-        Map<String,Integer> lvl4 = new HashMap<>();
-        lvl4.put("DEF", 2);
-        ABILITIES.put(4, lvl4);
+        ABILITIES.put(5, Arrays.asList(
+                new Ability(Ability.AbilityType.ATK, 1)
+        ));
+    }
 
-        Map<String,Integer> lvl5 = new HashMap<>();
-        lvl5.put("ATK", 4);
-        ABILITIES.put(5, lvl5);
+    public Archer() {
+        super(ABILITIES);
     }
 
     @Override
@@ -41,10 +46,5 @@ public class Archer extends AvatarClass{
             hp += hp / 8 - 1;
         }
         player.setCurrentHealthPoints(hp);
-    }
-
-    @Override
-    public Map<String, Integer> getAbilitiesForLevel(int level) {
-        return ABILITIES.get(level);
     }
 }
