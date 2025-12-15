@@ -2,6 +2,8 @@ package re.forestier.edu.rpg;
 
 public class TextView {
 
+        private TextView() {}
+
     public static String afficherJoueur(Player player) {
         StringBuilder sb = new StringBuilder();
 

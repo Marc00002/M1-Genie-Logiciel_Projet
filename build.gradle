@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id "jacoco"
     id 'info.solidsoft.pitest' version '1.15.0'
+    id "org.sonarqube" version "7.2.0.6526"
 }
 
 group = 're.forestier.edu'
@@ -16,7 +17,6 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
     testImplementation 'org.junit.jupiter:junit-jupiter-params:5.10.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
-    //testImplementation 'org.pitest:pitest-junit5-plugin:0.12'
     testImplementation("com.approvaltests:approvaltests:15.6.0")
     implementation 'org.hamcrest:hamcrest:2.2'
     implementation("org.freemarker:freemarker:2.3.30")

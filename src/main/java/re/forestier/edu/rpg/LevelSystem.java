@@ -1,9 +1,8 @@
 package re.forestier.edu.rpg;
 
-import java.util.HashMap;
-import java.util.Map;
-
  final class LevelSystem {
+
+    private LevelSystem() {}
 
     private static final int[] LEVEL_XP_REQUIREMENTS = {
             0, 10, 27, 57, 111

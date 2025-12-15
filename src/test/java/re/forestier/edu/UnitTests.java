@@ -23,7 +23,7 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class UnitTests {
+class UnitTests {
 
     private static final String ADVENTURER = "ADVENTURER";
     private static final String ARCHER = "ARCHER";

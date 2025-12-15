@@ -10,11 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.approvaltests.Approvals.verify;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.fail;
 
-public class GlobalTest {
+class GlobalTest {
 
     @Test
     @DisplayName("TextView: adventurer with empty inventory")

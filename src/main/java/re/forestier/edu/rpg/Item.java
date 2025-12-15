@@ -24,8 +24,6 @@ public class Item {
         itemList.add(new Item("Magic Bow", "Recover a part of your HP", 40, 1550));
     }
 
-
-
     public Item(String name, String description, int weight, int value){
         this.name = name;
         this.description = description;
@@ -53,12 +51,5 @@ public class Item {
         return null;
     }
 
-//    @Override
-//    public String toString() {
-//        return  "name='" + name + '\'' +
-//                ", description='" + description + '\'' +
-//                ", weight=" + weight +
-//                ", value=" + value;
-//    }
 }
 
