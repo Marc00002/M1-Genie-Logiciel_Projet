@@ -1,0 +1,15 @@
+# Joueur Gnognak le Barbare joué par Florian
+
+## Niveau : 4 (XP totale : 57)
+- Classe : Dwarf
+- Points de vie : 12 / 30
+- Argent : 150
+
+## Capacités :
+- **ALC** : 4
+- **INT** : 1
+- **ATK** : 3
+
+## Inventaire :
+- Holy Elixir — Recover your HP (poids : 2, valeur : 120)
+- Combat Edge — Well, that's an edge (poids : 4, valeur : 80)

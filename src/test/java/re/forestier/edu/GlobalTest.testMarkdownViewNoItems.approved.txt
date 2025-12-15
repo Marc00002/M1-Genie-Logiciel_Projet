@@ -1,0 +1,15 @@
+# Joueur Gnognak le Barbare joué par Florian
+
+## Niveau : 1 (XP totale : 0)
+- Classe : Adventurer
+- Points de vie : 0 / 0
+- Argent : 200
+
+## Capacités :
+- **ATK** : 3
+- **CHA** : 2
+- **INT** : 1
+- **DEF** : 1
+
+## Inventaire :
+_Inventaire vide._
