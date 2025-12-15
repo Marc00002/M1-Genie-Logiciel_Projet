@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+import re.forestier.edu.rpg.Item;
 import re.forestier.edu.rpg.Player;
 import re.forestier.edu.rpg.classes.Adventurer;
 import re.forestier.edu.rpg.classes.Archer;
@@ -12,22 +13,23 @@ import re.forestier.edu.rpg.classes.AvatarClass;
 import re.forestier.edu.rpg.classes.Dwarf;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class PlayerTest {
 
     private static Player createPlayer(AvatarClass avatarClass) {
-        return new Player("Florian", "Grognak le barbare", avatarClass, 200, new ArrayList<>());
+        return new Player("Florian", "Grognak le barbare", avatarClass, 200, new ArrayList<Item>());
     }
     private static Player createMoneyPlayer(int money) {
-        return new Player("Florian", "Grognak le barbare", new Adventurer(), money, new ArrayList<>());
+        return new Player("Florian", "Grognak le barbare", new Adventurer(), money, new ArrayList<Item>());
     }
 
     @Test
     @DisplayName("Valid Player creation initializes fields")
     void validPlayerCreation() {
-        ArrayList<String> inventory = new ArrayList<>();
+        List<Item> inventory = new ArrayList<>();
         Player p = new Player("Florian", "Grognak le barbare", new Archer(), 200, inventory);
 
         assertEquals("Florian", p.getPlayerName());

@@ -1,5 +1,5 @@
 package re.forestier.edu;
-import re.forestier.edu.rpg.Affichage;
+import re.forestier.edu.rpg.TextView;
 import re.forestier.edu.rpg.UpdatePlayer;
 import re.forestier.edu.rpg.Player;
 import re.forestier.edu.rpg.classes.Dwarf;
@@ -12,9 +12,9 @@ public class Main {
         firstPlayer.addMoney(400);
 
         UpdatePlayer.addXp(firstPlayer, 15);
-        System.out.println(Affichage.afficherJoueur(firstPlayer));
+        System.out.println(TextView.afficherJoueur(firstPlayer));
         System.out.println("------------------");
         UpdatePlayer.addXp(firstPlayer, 20);
-        System.out.println(Affichage.afficherJoueur(firstPlayer));
+        System.out.println(TextView.afficherJoueur(firstPlayer));
     }
 }

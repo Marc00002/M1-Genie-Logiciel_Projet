@@ -42,7 +42,7 @@ public class Archer extends AvatarClass implements LowHealthHealer {
     public void healBelowHalf(Player player) {
         int hp = player.getCurrentHealthPoints();
         hp += 1;
-        if (player.getInventory().contains("Magic Bow")) {
+        if (player.hasItemNamed("Magic Bow")) {
             hp += hp / 8 - 1;
         }
         player.setCurrentHealthPoints(hp);

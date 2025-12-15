@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import re.forestier.edu.rpg.Ability;
+import re.forestier.edu.rpg.Item;
 import re.forestier.edu.rpg.Player;
 import re.forestier.edu.rpg.UpdatePlayer;
 import re.forestier.edu.rpg.classes.Adventurer;
@@ -16,6 +17,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -27,21 +29,22 @@ public class UpdatePlayerTest {
     private static final String ARCHER = "ARCHER";
     private static final String DWARF = "DWARF";
 
-    private static final ArrayList<String> EXPECTED_ITEMS = new ArrayList<>(Arrays.asList(
-            "Lookout Ring : Prevents surprise attacks",
-            "Scroll of Stupidity : INT-2 when applied to an enemy",
-            "Draupnir : Increases XP gained by 100%",
-            "Magic Charm : Magic +10 for 5 rounds",
-            "Rune Staff of Curse : May burn your ennemies... Or yourself. Who knows?",
-            "Combat Edge : Well, that's an edge",
-            "Holy Elixir : Recover your HP"
-    ));
+    private static final List<String> EXPECTED_ITEM_NAMES = Arrays.asList(
+            "Lookout Ring",
+            "Scroll of Stupidity",
+            "Draupnir",
+            "Magic Charm",
+            "Rune Staff of Curse",
+            "Combat Edge",
+            "Holy Elixir",
+            "Magic Bow"
+    );
 
     private static Player createPlayer(AvatarClass avatarClass) {
         return new Player("Florian", "Grognak le barbare", avatarClass, 200, new ArrayList<>());
     }
 
-    private static Player createPlayer(AvatarClass avatarClass, ArrayList<String> inventory) {
+    private static Player createPlayer(AvatarClass avatarClass, List<Item> inventory) {
         return new Player("Florian", "Grognak le barbare", avatarClass, 200, inventory);
     }
 
@@ -85,7 +88,7 @@ public class UpdatePlayerTest {
     @Test
     @DisplayName("addXp with DWARF level up adds item + upgrades abilities")
     void addXp_levelUp_dwarf_toLevel5() {
-        ArrayList<String> inventory = new ArrayList<>();
+        List<Item> inventory = new ArrayList<>();
         Player p = createPlayer(new Dwarf(), inventory);
 
         p.setXp(110);
@@ -96,7 +99,8 @@ public class UpdatePlayerTest {
         assertEquals(5, p.retrieveLevel());
 
         assertThat(p.getInventory(), hasSize(1));
-        assertThat(EXPECTED_ITEMS, hasItem(p.getInventory().get(0)));
+        String itemName = p.getInventory().get(0).getName();
+        assertThat(EXPECTED_ITEM_NAMES, hasItem(itemName));
 
         assertEquals(1, p.getAbilityValue(Ability.AbilityType.CHA));
     }
@@ -125,9 +129,9 @@ public class UpdatePlayerTest {
     })
     void majFinDeTour_underHalfHealth(String avatarClass, String item, int xp, int expectedHp) {
 
-        ArrayList<String> inventory = new ArrayList<>();
+        List<Item> inventory = new ArrayList<>();
         if (!"NONE".equals(item)) {
-            inventory.add(item);
+            inventory.add(Item.getItem(item));
         }
 
         Player p = createPlayer(toAvatarClass(avatarClass), inventory);

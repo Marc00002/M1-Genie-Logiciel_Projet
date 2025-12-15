@@ -45,9 +45,8 @@ public class UpdatePlayer {
     }
 
     private static void giveRandomItem(Player player) {
-        Random random = new Random();
-        int index = random.nextInt(objectList.length);
-        player.getInventory().add(objectList[index]);
+        Item randomItem = Item.randomItem();
+        player.getInventory().add(randomItem);
     }
 
     public static void majFinDeTour(Player player) {
