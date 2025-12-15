@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Adventurer extends AvatarClass {
+public class Adventurer extends AvatarClass implements LowHealthHealer {
 
     private static final Map<Integer, List<Ability>> ABILITIES = new HashMap<>();
     static {

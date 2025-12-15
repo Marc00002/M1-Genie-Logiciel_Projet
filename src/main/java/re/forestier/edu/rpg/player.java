@@ -13,7 +13,7 @@ public class Player {
 
     private int healthPoints;
     private int currentHealthPoints;
-    protected int xp;
+    private int xp;
 
     private ArrayList<Ability> abilities;
     private ArrayList<String> inventory;
@@ -44,6 +44,7 @@ public class Player {
     public void setCurrentHealthPoints(int hp) { this.currentHealthPoints = hp; }
 
     public int getXp() { return xp; }
+    public void setXp(int xp) { this.xp = xp; }
 
     public void removeMoney(int amount) {
         int result = money - amount;
@@ -57,7 +58,7 @@ public class Player {
     }
 
     public int retrieveLevel() {
-        return LevelSystem.getLevel(xp);
+        return LevelSystem.getLevel(getXp());
     }
 
     public void applyAbilities(List<Ability> deltas) {
@@ -100,6 +101,7 @@ public class Player {
         }
         return total;
     }
+
 
     /*
     Ингредиенты:

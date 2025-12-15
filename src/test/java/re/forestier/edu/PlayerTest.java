@@ -17,30 +17,18 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class PlayerTest {
 
-    // Test-only subclass -> temporarily to change after refactoring
-    private static class TestPlayer extends Player {
-        TestPlayer(AvatarClass avatarClass, int money, ArrayList<String> inventory) {
-            super("Florian", "Grognak le barbare", avatarClass, money, inventory);
-        }
-
-        void givenXp(int value) {
-            this.xp = value;
-        }
+    private static Player createPlayer(AvatarClass avatarClass) {
+        return new Player("Florian", "Grognak le barbare", avatarClass, 200, new ArrayList<>());
     }
-
-    private static TestPlayer testPlayer(AvatarClass avatarClass, int money) {
-        return new TestPlayer(avatarClass, money, new ArrayList<>());
-    }
-
-    private static TestPlayer testPlayer(AvatarClass avatarClass, ArrayList<String> inventory) {
-        return new TestPlayer(avatarClass, 200, inventory);
+    private static Player createMoneyPlayer(int money) {
+        return new Player("Florian", "Grognak le barbare", new Adventurer(), money, new ArrayList<>());
     }
 
     @Test
     @DisplayName("Valid Player creation initializes fields")
     void validPlayerCreation() {
         ArrayList<String> inventory = new ArrayList<>();
-        TestPlayer p = testPlayer(new Archer(), inventory);
+        Player p = new Player("Florian", "Grognak le barbare", new Archer(), 200, inventory);
 
         assertEquals("Florian", p.getPlayerName());
         assertEquals("Grognak le barbare", p.getAvatarName());
@@ -50,19 +38,7 @@ public class PlayerTest {
         assertNotNull(p.getAbilities());
     }
 
-    // this test will never pass as we started using classes for the avatar class instead of strings so now anything other than than these classes will not work which is a good as this test shows a bad behavior
-//    @Test
-//    @DisplayName("Invalid class returns early and leaves fields null")
-//    void invalidClassLeavesDefaults() {
-//        TestPlayer p = testPlayer("INVALID",  new ArrayList<>());
-//
-//        assertNull(p.getAvatarClass());
-//        assertNull(p.getPlayerName());
-//        assertNull(p.getAvatarName());
-//        assertNull(p.getInventory());
-//        assertNull(p.getMoney());
-//        assertNull(p.getAbilities());
-//    }
+    // Old "invalid class" test no longer makes sense as we used AvatarClass, so we removed it.
 
     @ParameterizedTest(name = "addMoney: {0} + {1} → {2}")
     @CsvSource({
@@ -71,7 +47,7 @@ public class PlayerTest {
             "100, -30, 70"
     })
     void addMoney_characterization(int initial, int amount, int expected) {
-        TestPlayer p = testPlayer(new Adventurer(), initial);
+        Player p = createMoneyPlayer(initial);
         p.addMoney(amount);
         assertEquals(expected, p.getMoney());
     }
@@ -84,7 +60,7 @@ public class PlayerTest {
             "200, 200, 0"
     })
     void removeMoney_validCases(int initial, int amount, int expected) {
-        TestPlayer p = testPlayer(new Dwarf(), initial);
+        Player p = createMoneyPlayer(initial);
         p.removeMoney(amount);
         assertEquals(expected, p.getMoney());
     }
@@ -92,16 +68,16 @@ public class PlayerTest {
     @Test
     @DisplayName("removeMoney throws if result would be negative")
     void removeMoneyTooMuchThrows() {
-        TestPlayer p = testPlayer(new Adventurer(), 50);
+        Player p = createMoneyPlayer(50);
         assertThrows(IllegalArgumentException.class, () -> p.removeMoney(100));
     }
 
     @Test
     void defaultXpIsZero() {
-        assertEquals(0, testPlayer(new Adventurer(), 100).getXp());
+        assertEquals(0, createPlayer(new Adventurer()).getXp());
     }
 
-    @ParameterizedTest (name = "XP = {0} → retrieveLevel() = {1}")
+    @ParameterizedTest(name = "XP = {0} → retrieveLevel() = {1}")
     @CsvSource({
             "0, 1",
             "9, 1",
@@ -115,11 +91,9 @@ public class PlayerTest {
             "200, 5"
     })
     void retrieveLevel_boundaries(int xp, int expected) {
-        TestPlayer p = testPlayer(new Adventurer(), 100);
-        p.givenXp(xp);
+        Player p = createPlayer(new Adventurer());
+        p.setXp(xp);
 
         assertEquals(expected, p.retrieveLevel());
     }
-
-
 }

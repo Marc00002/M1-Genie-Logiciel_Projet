@@ -2,7 +2,6 @@ package re.forestier.edu;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import re.forestier.edu.rpg.Ability;
@@ -38,23 +37,12 @@ public class UpdatePlayerTest {
             "Holy Elixir : Recover your HP"
     ));
 
-    // Test-only subclass -> to change after refactoring
-    private static class TestPlayer extends Player {
-        TestPlayer(AvatarClass avatarClass, ArrayList<String> inventory) {
-            super("Florian", "Grognak le barbare", avatarClass, 200, inventory);
-        }
-
-        void givenXp(int value) {
-            this.xp = value;
-        }
+    private static Player createPlayer(AvatarClass avatarClass) {
+        return new Player("Florian", "Grognak le barbare", avatarClass, 200, new ArrayList<>());
     }
 
-    private static TestPlayer testPlayer(AvatarClass avatarClass) {
-        return new TestPlayer(avatarClass, new ArrayList<>());
-    }
-
-    private static TestPlayer testPlayer(AvatarClass avatarClass, ArrayList<String> inventory) {
-        return new TestPlayer(avatarClass, inventory);
+    private static Player createPlayer(AvatarClass avatarClass, ArrayList<String> inventory) {
+        return new Player("Florian", "Grognak le barbare", avatarClass, 200, inventory);
     }
 
     private static AvatarClass toAvatarClass(String name) {
@@ -69,7 +57,6 @@ public class UpdatePlayerTest {
                 return null;
         }
     }
-
 
     private static String captureOutput(Runnable action) {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -86,7 +73,7 @@ public class UpdatePlayerTest {
     @Test
     @DisplayName("addXp without level up -> returns false for level up and adds no item")
     void addXp_noLevelUp() {
-        TestPlayer p = testPlayer(new Adventurer());
+        Player p = createPlayer(new Adventurer());
 
         boolean leveled = UpdatePlayer.addXp(p, 5);
 
@@ -99,9 +86,9 @@ public class UpdatePlayerTest {
     @DisplayName("addXp with DWARF level up adds item + upgrades abilities")
     void addXp_levelUp_dwarf_toLevel5() {
         ArrayList<String> inventory = new ArrayList<>();
-        TestPlayer p = testPlayer(new Dwarf(),inventory);
+        Player p = createPlayer(new Dwarf(), inventory);
 
-        p.givenXp(110);
+        p.setXp(110);
         boolean leveled = UpdatePlayer.addXp(p, 1);
 
         assertTrue(leveled);
@@ -117,7 +104,7 @@ public class UpdatePlayerTest {
     @Test
     @DisplayName("majFinDeTour when HP=0 prints KO and stops")
     void majFinDeTour_KO_prints() {
-        TestPlayer p = testPlayer(new Adventurer());
+        Player p = createPlayer(new Adventurer());
         p.setHealthPoints(20);
         p.setCurrentHealthPoints(0);
 
@@ -143,7 +130,7 @@ public class UpdatePlayerTest {
             inventory.add(item);
         }
 
-        TestPlayer p = testPlayer(toAvatarClass(avatarClass), inventory);
+        Player p = createPlayer(toAvatarClass(avatarClass), inventory);
 
         if (ARCHER.equals(avatarClass) && "Magic Bow".equals(item)) {
             p.setHealthPoints(40);
@@ -153,7 +140,7 @@ public class UpdatePlayerTest {
             p.setCurrentHealthPoints(9);
         }
 
-        p.givenXp(xp);
+        p.setXp(xp);
 
         UpdatePlayer.majFinDeTour(p);
 
@@ -167,7 +154,7 @@ public class UpdatePlayerTest {
             "20, 25, 20"
     })
     void majFinDeTour_boundaries(int hp, int current, int expected) {
-        TestPlayer p = testPlayer(new Archer());
+        Player p = createPlayer(new Archer());
         p.setHealthPoints(hp);
         p.setCurrentHealthPoints(current);
 
@@ -176,16 +163,15 @@ public class UpdatePlayerTest {
         assertEquals(expected, p.getCurrentHealthPoints());
     }
 
-    //adventurer bug test (doesn't pass), should pass after fixing the bug
     @Test
     @DisplayName("Adventurer level 1 and level 2 abilities are correct")
     void adventurer_levelUp_updatesAbilities() {
-        TestPlayer p = testPlayer(new Adventurer());
+        Player p = createPlayer(new Adventurer());
 
         assertEquals(1, p.getAbilityValue(Ability.AbilityType.INT));
         assertEquals(2, p.getAbilityValue(Ability.AbilityType.CHA));
 
-        p.givenXp(9);
+        p.setXp(9);
         boolean leveled = UpdatePlayer.addXp(p, 1);
 
         assertTrue(leveled);
@@ -194,6 +180,4 @@ public class UpdatePlayerTest {
         assertEquals(2, p.getAbilityValue(Ability.AbilityType.INT));
         assertEquals(3, p.getAbilityValue(Ability.AbilityType.CHA));
     }
-
-
 }
