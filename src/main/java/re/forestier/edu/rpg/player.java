@@ -9,7 +9,7 @@ public class Player {
     private String playerName;
     private String avatarName;
     private AvatarClass avatarClass;
-    private Integer money;
+    private Money money;
 
     private int healthPoints;
     private int currentHealthPoints;
@@ -22,7 +22,7 @@ public class Player {
         this.playerName = playerName;
         this.avatarName = avatarName;
         this.avatarClass = avatarClass;
-        this.money = money;
+        this.money = new Money(money);
         this.inventory = inventory;
         this.abilities = new ArrayList<>();
         applyAbilities(avatarClass.getAbilitiesForLevel(1));
@@ -32,10 +32,8 @@ public class Player {
     public String getAvatarName() { return avatarName; }
     public AvatarClass getAvatarClass() { return avatarClass; }
 
-    public Integer getMoney() { return money; }
-    public List<Ability> getAbilities() {
-        return abilities;
-    }
+    public Integer getMoney() {return money.getAmount(); }
+    public List<Ability> getAbilities() { return abilities; }
     public ArrayList<String> getInventory() { return inventory; }
 
     public int getHealthPoints() { return healthPoints; }
@@ -46,15 +44,12 @@ public class Player {
     public int getXp() { return xp; }
     public void setXp(int xp) { this.xp = xp; }
 
-    public void removeMoney(int amount) {
-        int result = money - amount;
-        if (result < 0) {
-            throw new IllegalArgumentException("Player can't have a negative money!");
-        }
-        money = result;
-    }
     public void addMoney(int amount) {
-        money += amount;
+        money.addMoney(amount);
+    }
+
+    public void removeMoney(int amount) {
+        money.removeMoney(amount);
     }
 
     public int retrieveLevel() {
